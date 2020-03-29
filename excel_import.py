@@ -7,7 +7,6 @@ class ExcelImport:
         data = pd.read_excel(path)
         self.input = data
         num_col_data = list(data)
-        print(num_col_data)
         self.ncd = num_col_data
         array = []
         i = 0

@@ -19,25 +19,25 @@ class ID3Editor():
         if pos_a == -1: return ""
         return value[0:pos_a]
 
-    def main():
-
-        audiofile = eyed3.load("song_directory/07 Melting Point.mp3")
-        print(f"# comments: {len(audiofile.tag.comments)}")
+    def main_id3(path):
+        audiofile = eyed3.load(path)
         for comment in audiofile.tag.comments:
-            # Show comment
-            print(comment.description)
-            print(comment.text)
             com = comment.text
             genres = ID3Editor.after(com, "- ")
             comment_split_by_space = com.split(" ")
             key = comment_split_by_space[0]
             energy = comment_split_by_space[2]
             comment_split_by_comma = genres.split(", ")
+
+
+            categories = []
             for item in comment_split_by_comma:
-                print(item)
+                categories.append(item)
+            print(categories)
+
         print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
 
-        audiofile.tag.comments.set("Techno, House, Funk, Soul")
+        # audiofile.tag.comments.set("Techno, House, Funk, Soul")
         print(f"# comments (after remove): {len(audiofile.tag.comments)}")
         for comment in audiofile.tag.comments:
             # Show comment
@@ -46,4 +46,5 @@ class ID3Editor():
 
 
 if __name__ == "__main__":
-    ID3Editor.main()
+    path = "song_directory/07 Melting Point.mp3"
+    ID3Editor.main_id3(path)

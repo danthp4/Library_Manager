@@ -1,7 +1,7 @@
 from tkinter import *
-import os
 
 from excel_import import ExcelImport
+from player import play
 
 
 class Checkbar(Frame):
@@ -18,50 +18,44 @@ class Checkbar(Frame):
         return map((lambda var: var.get()), self.vars)
 
 
-if __name__ == '__main__':
-    input_file = 'Genre.xlsx'
+def main(audio_file, excel_file):
+    audio_path = audio_file
+    input_file = excel_file
     data = ExcelImport(input_file)
-    input_array = data.array()
-    input_ncd = data.ncd
+    main.input_array = data.array()
+    main.input_ncd = data.ncd
     root = Tk()
     root.title("DJ library editor")
 
     fm = Frame(root)
-    for item in input_ncd:
-        Label(fm, text=item, relief="groove", bd=5).pack(side=TOP, anchor=W, fill=X, expand=YES)
+    for item in main.input_ncd:
+        Label(fm, text=item, relief=GROOVE, bd=5).pack(side=TOP, anchor=W, fill=X)
 
     fm.pack(side=LEFT, padx=10)
     fm2 = Frame(root)
-    dict = "global"
-    dict = {}
+    main.dict = {}
     i = 0
-    for item in input_array:
-        dict[input_ncd[i]] = Checkbar(root, item)
-        dict[input_ncd[i]].pack(side=TOP, anchor=W, fill=X, expand=YES)
-        dict[input_ncd[i]].config(relief=GROOVE, bd=1)
+    for item in main.input_array:
+        main.dict[main.input_ncd[i]] = Checkbar(root, item)
+        main.dict[main.input_ncd[i]].pack(side=TOP, anchor=W, fill=X)
+        main.dict[main.input_ncd[i]].config(relief=GROOVE, bd=1)
         i += 1
 
     fm2.pack(side=LEFT, padx=10)
 
-
-    def allstates():
-        for i in range(len(input_ncd)):
-            x = dict.get(input_ncd[i])
-            print(str(input_ncd[i]), list(x.state()))
-
-
-
-
-
-
-
-    def play():
-        import winsound
-        winsound.PlaySound('07 Melting Point.mp3', winsound.SND_FILENNAME)
-
-
-    Button(root, text='Quit', command=root.quit).pack(side=RIGHT)
-    Button(root, text='Peek', command=allstates).pack(side=RIGHT)
-    Button(root, text="c note", command=play).pack(side=RIGHT)
+    fm3 = Frame(root)
+    Button(fm3, text='Quit', command=root.quit).pack(side=RIGHT)
+    Button(fm3, text='Peek', command=allstates).pack(side=RIGHT)
+    Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
+    fm3.pack(side=RIGHT, padx=10)
 
     root.mainloop()
+
+
+def allstates():
+    for i in range(len(main.input_ncd)):
+        x = main.dict.get(main.input_ncd[i])
+        print(str(main.input_ncd[i]), list(x.state()))
+
+if __name__ == '__main__':
+    main()
