@@ -28,21 +28,30 @@ if __name__ == '__main__':
     root.title("DJ library editor")
 
     for item in input_ncd:
-        Button(fm, text=item).pack(side=TOP, anchor=W, fill=X, expand=YES)
+        Label(fm, text=item, relief="groove", bd=5).pack(side=TOP, anchor=W, fill=X, expand=YES)
 
-    fm.pack(side=LEFT, fill=BOTH, expand=YES)
+    fm.pack(side=LEFT, padx=10)
     fm2 = Frame(root)
-
+    list ="global"
+    list=[]
+    i = 0
     for item in input_array:
-        line = Checkbar(fm2, item)
-        line.pack(side=TOP, anchor=W, fill=X, expand=YES)
-        line.config(relief=GROOVE, bd=1)
+        list.append(str(i))
+        list[i] = Checkbar(root, item)
+        list[i].pack(side=TOP, anchor=W, fill=X, expand=YES)
+        list[i].config(relief=GROOVE, bd=1)
+        i =+ 1
+
+
 
     fm2.pack(side=LEFT, padx=10)
 
 
+
     def allstates():
-        print(list(input_array.state()))
+        print(list[0])
+        print(list[0].state)
+        print(list[list[0].state()])
 
 
     Button(root, text='Quit', command=root.quit).pack(side=RIGHT)
