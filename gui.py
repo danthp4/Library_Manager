@@ -1,4 +1,5 @@
 from tkinter import *
+import os
 
 from excel_import import ExcelImport
 
@@ -18,7 +19,6 @@ class Checkbar(Frame):
 
 
 if __name__ == '__main__':
-
     input_file = 'Genre.xlsx'
     data = ExcelImport(input_file)
     input_array = data.array()
@@ -51,6 +51,17 @@ if __name__ == '__main__':
 
 
 
+
+
+
+
+    def play():
+        import winsound
+        winsound.PlaySound('07 Melting Point.mp3', winsound.SND_FILENNAME)
+
+
     Button(root, text='Quit', command=root.quit).pack(side=RIGHT)
     Button(root, text='Peek', command=allstates).pack(side=RIGHT)
+    Button(root, text="c note", command=play).pack(side=RIGHT)
+
     root.mainloop()
