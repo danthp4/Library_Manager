@@ -24,34 +24,31 @@ if __name__ == '__main__':
     input_array = data.array()
     input_ncd = data.ncd
     root = Tk()
-    fm = Frame(root)
     root.title("DJ library editor")
 
+    fm = Frame(root)
     for item in input_ncd:
         Label(fm, text=item, relief="groove", bd=5).pack(side=TOP, anchor=W, fill=X, expand=YES)
 
     fm.pack(side=LEFT, padx=10)
     fm2 = Frame(root)
-    list ="global"
-    list=[]
+    dict = "global"
+    dict = {}
     i = 0
     for item in input_array:
-        list.append(str(i))
-        list[i] = Checkbar(root, item)
-        list[i].pack(side=TOP, anchor=W, fill=X, expand=YES)
-        list[i].config(relief=GROOVE, bd=1)
-        i =+ 1
-
-
+        dict[input_ncd[i]] = Checkbar(root, item)
+        dict[input_ncd[i]].pack(side=TOP, anchor=W, fill=X, expand=YES)
+        dict[input_ncd[i]].config(relief=GROOVE, bd=1)
+        i += 1
 
     fm2.pack(side=LEFT, padx=10)
 
 
-
     def allstates():
-        print(list[0])
-        print(list[0].state)
-        print(list[list[0].state()])
+        for i in range(len(input_ncd)):
+            x = dict.get(input_ncd[i])
+            print(str(input_ncd[i]), list(x.state()))
+
 
 
     Button(root, text='Quit', command=root.quit).pack(side=RIGHT)
