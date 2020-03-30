@@ -16,7 +16,7 @@ def play(path):
 
     # Play for 10 seconds then exit
     play.player.play()
-    play.player.set_position(0.4)
+    play.player.set_position(0.3)
 
 
 def stop(path):

@@ -72,6 +72,7 @@ def close_inst(audio_path):
     # stop audio on close
     stop(audio_path)
     additional_collector()
+    write()
     main.root.destroy()
 
 
@@ -170,7 +171,6 @@ def additional_collector():
         additional_collector.add_list.append(item)
 
 
-
 class ID3Editor():
 
     def after(value, a):
@@ -221,8 +221,8 @@ if __name__ == '__main__':
     playlist_name = "Recently Added"
     itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
-    app.main(excel_file, "song_directory/04 Noamm _ Telecommunication.mp3")
-    # path_list = playlist_list(playlist_name, itunes_xml)
-    # for item in path_list:
-    # audio_path = item
-    # app.main(excel_file, audio_path)
+    # app.main(excel_file, "song_directory/04 Noamm _ Telecommunication.mp3")
+    path_list = playlist_list(playlist_name, itunes_xml)
+    for item in path_list:
+        audio_path = item
+        app.main(excel_file, audio_path)
