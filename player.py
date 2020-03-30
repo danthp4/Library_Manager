@@ -1,6 +1,7 @@
 import vlc
-def play(path):
 
+
+def play(path):
     instance = vlc.Instance()
 
     # Create a MediaPlayer with the default instance
@@ -11,9 +12,9 @@ def play(path):
 
     # Add the media to the player
     player.set_media(media)
-    player.set_position(60)
+
     player.audio_set_volume(65)
 
     # Play for 10 seconds then exit
     player.play()
-
+    player.set_position(0.35)

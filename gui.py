@@ -1,6 +1,9 @@
 from tkinter import *
-from tkinter.filedialog import askopenfilename
-import eyed3, gui, copy
+
+import copy
+import eyed3
+import gui
+
 from excel_import import ExcelImport
 from player import play
 
@@ -28,8 +31,39 @@ class Checkbar(Frame):
         return map((lambda var: var.get()), self.vars)
 
 
+def allstates():
+    """for i in range(len(main.input_ncd)):
+        x = main.dict.get(main.input_ncd[i])
+        print(str(main.input_ncd[i]), list(x.state()))"""
+
+    main.checked_cat = []
+    for i in range(len(main.input_ncd)):
+        state_list = main.dict.get(main.input_ncd[i]).state()
+        j = 0
+        for value in state_list:
+            if value == 1:
+                main.checked_cat.append(main.input_array[i][j])
+            j += 1
+    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
+    print('Check: ' + final_output)
+
+
+def write():
+    main.checked_cat = []
+    for i in range(len(main.input_ncd)):
+        state_list = main.dict.get(main.input_ncd[i]).state()
+        j = 0
+        for value in state_list:
+            if value == 1:
+                main.checked_cat.append(main.input_array[i][j])
+            j += 1
+    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
+    print('Wrote: ' + final_output)
+    ID3Editor.id3_write(main.audio_path, final_output)
+
+
 def main(excel_file, audio_path):
-    main.audio_path= audio_path
+    main.audio_path = audio_path
     input_file = excel_file
     data = ExcelImport(input_file)
     main.input_array = data.array()
@@ -63,7 +97,6 @@ def main(excel_file, audio_path):
         main.dict[main.input_ncd[i]].config(relief=GROOVE, bd=1)
         i += 1
 
-
     fm2.pack(side=LEFT, padx=10)
     fm3 = Frame(root)
     Button(fm3, text='Quit', command=root.quit).pack(side=RIGHT)
@@ -74,38 +107,6 @@ def main(excel_file, audio_path):
 
     root.mainloop()
 
-
-def allstates():
-
-    """for i in range(len(main.input_ncd)):
-        x = main.dict.get(main.input_ncd[i])
-        print(str(main.input_ncd[i]), list(x.state()))"""
-
-    main.checked_cat = []
-    for i in range(len(main.input_ncd)):
-        state_list = main.dict.get(main.input_ncd[i]).state()
-        j = 0
-        for value in state_list:
-            if value == 1:
-                main.checked_cat.append(main.input_array[i][j])
-            j += 1
-    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
-    print('Check: ' + final_output)
-
-
-def write():
-
-    main.checked_cat = []
-    for i in range(len(main.input_ncd)):
-        state_list = main.dict.get(main.input_ncd[i]).state()
-        j = 0
-        for value in state_list:
-            if value == 1:
-                main.checked_cat.append(main.input_array[i][j])
-            j += 1
-    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
-    print('Wrote: ' + final_output)
-    ID3Editor.id3_write(main.audio_path, final_output)
 
 class ID3Editor():
 
@@ -151,4 +152,4 @@ class ID3Editor():
 if __name__ == '__main__':
     excel_file = 'Genre.xlsx'
     audio_path = "song_directory/07 Melting Point.mp3"
-    a = gui.main(excel_file, audio_path)
+    initiate = gui.main(excel_file, audio_path)
