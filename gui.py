@@ -29,7 +29,7 @@ class Checkbar(Frame):
 
 
 def main(excel_file):
-    audio_path = askopenfilename()
+    audio_path = "song_directory/12 Naked In The Rain.mp3"
     input_file = excel_file
     data = ExcelImport(input_file)
     main.input_array = data.array()
@@ -37,7 +37,10 @@ def main(excel_file):
     main.input_ncd = data.ncd
     root = Tk()
     root.title("DJ library editor")
-    main.cat = ID3Editor.main_id3(audio_path)
+    id3_output = ID3Editor.main_id3(audio_path)
+    main.cat = id3_output[0]
+    main.key = id3_output[1]
+    main.energy = id3_output[2]
     main.leftover_cat = copy.copy(main.cat)
 
     fm = Frame(root)
@@ -52,7 +55,6 @@ def main(excel_file):
             for value in main.cat:
                 if value == item:
                     main.leftover_cat.remove(value)
-    print(main.leftover_cat)
     main.input_array.append(main.leftover_cat)
     i = 0
     for item in main.input_array:
@@ -65,7 +67,8 @@ def main(excel_file):
     fm2.pack(side=LEFT, padx=10)
     fm3 = Frame(root)
     Button(fm3, text='Quit', command=root.quit).pack(side=RIGHT)
-    Button(fm3, text='Peek', command=allstates).pack(side=RIGHT)
+    Button(fm3, text='Check states', command=allstates).pack(side=RIGHT)
+    Button(fm3, text='Write', command=lambda: ID3Editor.write(audio_path,)).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
 
@@ -74,9 +77,20 @@ def main(excel_file):
 
 
 def allstates():
-    for i in range(len(main.input_ncd)):
+    """for i in range(len(main.input_ncd)):
         x = main.dict.get(main.input_ncd[i])
-        print(str(main.input_ncd[i]), list(x.state()))
+        print(str(main.input_ncd[i]), list(x.state()))"""
+    main.checked_cat = []
+    for i in range(len(main.input_ncd)):
+        state_list = main.dict.get(main.input_ncd[i]).state()
+        j = 0
+        for value in state_list:
+            if value == 1:
+                main.checked_cat.append(main.input_array[i][j])
+            j += 1
+    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
+    print(final_output)
+
 
 
 class ID3Editor():
@@ -110,12 +124,12 @@ class ID3Editor():
             categories = []
             for item in comment_split_by_comma:
                 categories.append(item)
-            print(categories)
 
         print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
+        return categories, key, energy
 
-        # audiofile.tag.comments.set("Techno, House, Funk, Soul")
-        return categories
+    def write(audiofile, string):
+        audiofile.tag.comments.set(string)
 
 
 if __name__ == '__main__':

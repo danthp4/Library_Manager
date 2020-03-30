@@ -2,6 +2,7 @@ import old
 from tkinter.filedialog import askopenfilename
 
 if __name__ == '__main__':
-    audio_path = askopenfilename()
+    audio_path = "song_directory/07 Melting Point.mp3"
     excel_file = 'Genre.xlsx'
     old.main(audio_path, excel_file)
+
