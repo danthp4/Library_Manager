@@ -1,10 +1,10 @@
 import copy
 from tkinter import *
-import gui, eyed3
+import app, eyed3
 from itunes import playlist_list
 from excel_import import ExcelImport
-from player import play
-
+from player import play, stop
+import time
 
 class Checkbar(Frame):
     def __init__(self, parent=None, picks=[], side=LEFT, anchor=W):
@@ -61,6 +61,12 @@ def write():
     print('Wrote: ' + final_output)
     ID3Editor.id3_write(main.audio_path, final_output)
 
+def close_inst(audio_path):
+    stop(audio_path)
+    main.root.destroy()
+
+def disable_event():
+    pass
 
 def main(excel_file, audio_path):
     main.audio_path = audio_path
@@ -69,8 +75,9 @@ def main(excel_file, audio_path):
     main.input_array = data.array()
     data.ncd.append('Additional')
     main.input_ncd = data.ncd
-    root = Tk()
-    root.title("DJ library editor")
+    main.root = Tk()
+    main.root.protocol("WM_DELETE_WINDOW", disable_event)
+    main.root.title("DJ library editor")
     id3_output = ID3Editor.main_id3(audio_path)
     main.cat = id3_output[0]
     main.key = id3_output[1]
@@ -80,13 +87,15 @@ def main(excel_file, audio_path):
     details = ID3Editor.get_details(audio_path)
     song_title = details[0]
     artist = details[1]
+    play(audio_path)
 
-    fm = Frame(root)
+
+    fm = Frame(main.root)
     for item in main.input_ncd:
         Label(fm, text=item, relief=GROOVE, bd=5).pack(side=TOP, anchor=W, fill=X)
 
     fm.pack(side=LEFT, padx=10)
-    fm2 = Frame(root)
+    fm2 = Frame(main.root)
     main.dict = {}
     for list in main.input_array:
         for item in list:
@@ -102,14 +111,15 @@ def main(excel_file, audio_path):
         i += 1
 
     fm2.pack(side=LEFT, padx=10)
-    fm3 = Frame(root)
-    Button(fm3, text='Quit', command=root.destroy).pack(side=RIGHT)
+    fm3 = Frame(main.root)
+    Button(fm3, text='Next', command=lambda: close_inst(audio_path)).pack(side=RIGHT)
     Button(fm3, text='Check states', command=allstates).pack(side=RIGHT)
     Button(fm3, text='Write', command=lambda: write()).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
+    Button(fm3, text="Stop", command=lambda: stop(audio_path)).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
 
-    fm4 = Frame(root)
+    fm4 = Frame(main.root)
     Label(fm4, text=audio_path, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=artist, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=song_title, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
@@ -117,7 +127,7 @@ def main(excel_file, audio_path):
     fm4.pack(side=LEFT, padx=10)
     allstates()
 
-    root.mainloop()
+    main.root.mainloop()
 
 
 class ID3Editor():
@@ -167,11 +177,11 @@ class ID3Editor():
 
 
 if __name__ == '__main__':
-    playlist_name = "Acid"
+    playlist_name = "Recently Added"
     itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
     path_list = playlist_list(playlist_name, itunes_xml)
 
     for item in path_list:
         audio_path=item
-        initiate = gui.main(excel_file, audio_path)
+        initiate = app.main(excel_file, audio_path)
