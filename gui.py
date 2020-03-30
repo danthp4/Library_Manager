@@ -28,8 +28,8 @@ class Checkbar(Frame):
         return map((lambda var: var.get()), self.vars)
 
 
-def main(excel_file):
-    audio_path = "song_directory/12 Naked In The Rain.mp3"
+def main(excel_file, audio_path):
+    main.audio_path= audio_path
     input_file = excel_file
     data = ExcelImport(input_file)
     main.input_array = data.array()
@@ -68,18 +68,19 @@ def main(excel_file):
     fm3 = Frame(root)
     Button(fm3, text='Quit', command=root.quit).pack(side=RIGHT)
     Button(fm3, text='Check states', command=allstates).pack(side=RIGHT)
-    Button(fm3, text='Write', command=lambda: ID3Editor.write(audio_path,)).pack(side=RIGHT)
+    Button(fm3, text='Write', command=lambda: write()).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
 
     root.mainloop()
-    return allstates(), str(main.input_array)
 
 
 def allstates():
+
     """for i in range(len(main.input_ncd)):
         x = main.dict.get(main.input_ncd[i])
         print(str(main.input_ncd[i]), list(x.state()))"""
+
     main.checked_cat = []
     for i in range(len(main.input_ncd)):
         state_list = main.dict.get(main.input_ncd[i]).state()
@@ -89,9 +90,22 @@ def allstates():
                 main.checked_cat.append(main.input_array[i][j])
             j += 1
     final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
-    print(final_output)
+    print('Check: ' + final_output)
 
 
+def write():
+
+    main.checked_cat = []
+    for i in range(len(main.input_ncd)):
+        state_list = main.dict.get(main.input_ncd[i]).state()
+        j = 0
+        for value in state_list:
+            if value == 1:
+                main.checked_cat.append(main.input_array[i][j])
+            j += 1
+    final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
+    print('Wrote: ' + final_output)
+    ID3Editor.id3_write(main.audio_path, final_output)
 
 class ID3Editor():
 
@@ -128,10 +142,13 @@ class ID3Editor():
         print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
         return categories, key, energy
 
-    def write(audiofile, string):
+    def id3_write(path, string):
+        audiofile = eyed3.load(path)
         audiofile.tag.comments.set(string)
+        audiofile.tag.save()
 
 
 if __name__ == '__main__':
     excel_file = 'Genre.xlsx'
-    a = gui.main(excel_file)
+    audio_path = "song_directory/07 Melting Point.mp3"
+    a = gui.main(excel_file, audio_path)

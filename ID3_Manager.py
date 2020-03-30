@@ -35,7 +35,7 @@ class ID3Editor():
 
         print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
 
-        # audiofile.tag.comments.set("Techno, House, Funk, Soul")
+        audiofile.tag.comments.set("Techno, House, Funk, Soul")
         print(f"# comments (after remove): {len(audiofile.tag.comments)}")
         for comment in audiofile.tag.comments:
             # Show comment
