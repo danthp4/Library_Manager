@@ -1,16 +1,20 @@
 import copy
 from tkinter import *
-import app, eyed3
-from itunes import playlist_list
+
+import eyed3
+
+import app
 from excel_import import ExcelImport
+from itunes import playlist_list
 from player import play, stop
-import time
+
 
 class Checkbar(Frame):
     def __init__(self, parent=None, picks=[], side=LEFT, anchor=W):
         Frame.__init__(self, parent)
         self.vars = []
         var = IntVar()
+        # check picks to see if category is used, if not but in ""additional" column
         for pick in picks:
             for value in main.cat:
                 if value == pick:
@@ -30,10 +34,11 @@ class Checkbar(Frame):
 
 
 def allstates():
+    # To get state output as list un-comment below
     """for i in range(len(main.input_ncd)):
         x = main.dict.get(main.input_ncd[i])
         print(str(main.input_ncd[i]), list(x.state()))"""
-
+    # check string output of checkbox changes
     main.checked_cat = []
     for i in range(len(main.input_ncd)):
         state_list = main.dict.get(main.input_ncd[i]).state()
@@ -49,6 +54,7 @@ def allstates():
 
 
 def write():
+    # write checkbox changes to file and print
     main.checked_cat = []
     for i in range(len(main.input_ncd)):
         state_list = main.dict.get(main.input_ncd[i]).state()
@@ -61,56 +67,79 @@ def write():
     print('Wrote: ' + final_output)
     ID3Editor.id3_write(main.audio_path, final_output)
 
+
 def close_inst(audio_path):
+    # stop audio on close
     stop(audio_path)
+    additional_collector()
     main.root.destroy()
 
+
 def disable_event():
+    # for stopping accidental close via window x
     pass
 
+
 def main(excel_file, audio_path):
+    # initialise variables
     main.audio_path = audio_path
     input_file = excel_file
     data = ExcelImport(input_file)
     main.input_array = data.array()
     data.ncd.append('Additional')
     main.input_ncd = data.ncd
+    main.dict = {}
+
+    # tkinkter window options
     main.root = Tk()
     main.root.protocol("WM_DELETE_WINDOW", disable_event)
     main.root.title("DJ library editor")
+
+    # get details from eyed3 for audio file
     id3_output = ID3Editor.main_id3(audio_path)
     main.cat = id3_output[0]
     main.key = id3_output[1]
     main.energy = id3_output[2]
-    main.leftover_cat = copy.copy(main.cat)
-    main.update = StringVar()
     details = ID3Editor.get_details(audio_path)
     song_title = details[0]
     artist = details[1]
+
+    # start playback of file on open
     play(audio_path)
 
+    # copy category list so program can later deterimin leftover categories
+    main.leftover_cat = copy.copy(main.cat)
 
+    # initalise string update in window
+    main.update = StringVar()
+
+    # draw labels
     fm = Frame(main.root)
     for item in main.input_ncd:
         Label(fm, text=item, relief=GROOVE, bd=5).pack(side=TOP, anchor=W, fill=X)
-
     fm.pack(side=LEFT, padx=10)
-    fm2 = Frame(main.root)
-    main.dict = {}
+
+    # check categories for leftovers and remove used categories from leftover_cat
     for list in main.input_array:
         for item in list:
             for value in main.cat:
                 if value == item:
                     main.leftover_cat.remove(value)
     main.input_array.append(main.leftover_cat)
+
+    print(main.leftover_cat)
+
+    # draw checkboxes
+    fm2 = Frame(main.root)
     i = 0
     for item in main.input_array:
         main.dict[main.input_ncd[i]] = Checkbar(fm2, item)
         main.dict[main.input_ncd[i]].pack(side=TOP, anchor=W, fill=X)
         main.dict[main.input_ncd[i]].config(relief=GROOVE, bd=1)
         i += 1
-
     fm2.pack(side=LEFT, padx=10)
+
+    # draw user buttons
     fm3 = Frame(main.root)
     Button(fm3, text='Next', command=lambda: close_inst(audio_path)).pack(side=RIGHT)
     Button(fm3, text='Check states', command=allstates).pack(side=RIGHT)
@@ -119,15 +148,27 @@ def main(excel_file, audio_path):
     Button(fm3, text="Stop", command=lambda: stop(audio_path)).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
 
+    # draw eyed3 info labels
     fm4 = Frame(main.root)
     Label(fm4, text=audio_path, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=artist, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=song_title, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, textvariable=main.update, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     fm4.pack(side=LEFT, padx=10)
+    # update string representation
     allstates()
 
+    # draw tkinter
     main.root.mainloop()
+
+
+def additional_collector():
+    additional_collector.add_list = []
+    f = open("add.txt", "a+")
+    for item in main.leftover_cat:
+        f.write("\n" + item)
+        additional_collector.add_list.append(item)
+
 
 
 class ID3Editor():
@@ -180,8 +221,8 @@ if __name__ == '__main__':
     playlist_name = "Recently Added"
     itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
-    path_list = playlist_list(playlist_name, itunes_xml)
-
-    for item in path_list:
-        audio_path=item
-        initiate = app.main(excel_file, audio_path)
+    app.main(excel_file, "song_directory/04 Noamm _ Telecommunication.mp3")
+    # path_list = playlist_list(playlist_name, itunes_xml)
+    # for item in path_list:
+    # audio_path = item
+    # app.main(excel_file, audio_path)
