@@ -1,6 +1,4 @@
 import eyed3
-
-
 class ID3Editor():
 
     def after(value, a):
