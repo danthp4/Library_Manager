@@ -1,9 +1,9 @@
+import copy
 from tkinter import *
 
-import copy
 import eyed3
-import gui
 
+import gui
 from excel_import import ExcelImport
 from player import play
 
@@ -46,6 +46,8 @@ def allstates():
             j += 1
     final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
     print('Check: ' + final_output)
+    main.update.set(final_output)
+    return final_output
 
 
 def write():
@@ -76,6 +78,7 @@ def main(excel_file, audio_path):
     main.key = id3_output[1]
     main.energy = id3_output[2]
     main.leftover_cat = copy.copy(main.cat)
+    main.update = StringVar()
 
     fm = Frame(root)
     for item in main.input_ncd:
@@ -104,6 +107,12 @@ def main(excel_file, audio_path):
     Button(fm3, text='Write', command=lambda: write()).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
+
+    fm4 = Frame(root)
+    Label(fm4, text=audio_path, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    Label(fm4, textvariable=main.update, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    fm4.pack(side=LEFT, padx=10)
+    allstates()
 
     root.mainloop()
 
