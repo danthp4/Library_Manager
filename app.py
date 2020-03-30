@@ -1,9 +1,6 @@
 import copy
 from tkinter import *
-
-import eyed3
-
-import app
+import eyed3, app
 from excel_import import ExcelImport
 from itunes import playlist_list
 from player import play, stop
@@ -14,7 +11,7 @@ class Checkbar(Frame):
         Frame.__init__(self, parent)
         self.vars = []
         var = IntVar()
-        # check picks to see if category is used, if not but in ""additional" column
+        # check picks to see if category is used, if not put in ""additional" column
         for pick in picks:
             for value in main.cat:
                 if value == pick:
@@ -69,7 +66,7 @@ def write():
 
 
 def close_inst(audio_path):
-    # stop audio on close
+    # stop audio and write to file on close
     stop(audio_path)
     additional_collector()
     write()
@@ -218,10 +215,9 @@ class ID3Editor():
 
 
 if __name__ == '__main__':
-    playlist_name = "Sort"
+    playlist_name = "90s"
     itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
-    # app.main(excel_file, "song_directory/04 Noamm _ Telecommunication.mp3")
     path_list = playlist_list(playlist_name, itunes_xml)
     for item in path_list:
         audio_path = item
