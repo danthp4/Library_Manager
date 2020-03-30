@@ -1,9 +1,7 @@
 import copy
 from tkinter import *
-
-import eyed3
-
-import gui
+import gui, eyed3
+from itunes import playlist_list
 from excel_import import ExcelImport
 from player import play
 
@@ -79,6 +77,9 @@ def main(excel_file, audio_path):
     main.energy = id3_output[2]
     main.leftover_cat = copy.copy(main.cat)
     main.update = StringVar()
+    details = ID3Editor.get_details(audio_path)
+    song_title = details[0]
+    artist = details[1]
 
     fm = Frame(root)
     for item in main.input_ncd:
@@ -109,7 +110,9 @@ def main(excel_file, audio_path):
     fm3.pack(side=RIGHT, padx=10)
 
     fm4 = Frame(root)
-    Label(fm4, text=audio_path, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    Label(fm4, text=audio_path, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    Label(fm4, text=artist, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    Label(fm4, text=song_title, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, textvariable=main.update, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     fm4.pack(side=LEFT, padx=10)
     allstates()
@@ -149,7 +152,6 @@ class ID3Editor():
             for item in comment_split_by_comma:
                 categories.append(item)
 
-        print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
         return categories, key, energy
 
     def id3_write(path, string):
@@ -157,8 +159,19 @@ class ID3Editor():
         audiofile.tag.comments.set(string)
         audiofile.tag.save()
 
+    def get_details(path):
+        audiofile = eyed3.load(path)
+        title = audiofile.tag.title
+        artist = audiofile.tag.artist
+        return title, artist
+
 
 if __name__ == '__main__':
+    playlist_name = "Acid"
+    itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
-    audio_path = "song_directory/07 Melting Point.mp3"
-    initiate = gui.main(excel_file, audio_path)
+    path_list = playlist_list(playlist_name, itunes_xml)
+
+    for item in path_list:
+        audio_path=item
+        initiate = gui.main(excel_file, audio_path)
