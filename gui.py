@@ -103,7 +103,7 @@ def main(excel_file, audio_path):
 
     fm2.pack(side=LEFT, padx=10)
     fm3 = Frame(root)
-    Button(fm3, text='Quit', command=root.quit).pack(side=RIGHT)
+    Button(fm3, text='Quit', command=root.destroy).pack(side=RIGHT)
     Button(fm3, text='Check states', command=allstates).pack(side=RIGHT)
     Button(fm3, text='Write', command=lambda: write()).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
