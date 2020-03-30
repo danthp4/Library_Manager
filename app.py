@@ -218,7 +218,7 @@ class ID3Editor():
 
 
 if __name__ == '__main__':
-    playlist_name = "Recently Added"
+    playlist_name = "Sort"
     itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
     # app.main(excel_file, "song_directory/04 Noamm _ Telecommunication.mp3")
