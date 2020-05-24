@@ -215,8 +215,8 @@ class ID3Editor():
 
 
 if __name__ == '__main__':
-    playlist_name = "90s"
-    itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
+    playlist_name = "Sort"
+    itunes_xml = "C:/Users/danie/Music/iTunes/iTunes Music Library.xml"
     excel_file = 'Genre.xlsx'
     path_list = playlist_list(playlist_name, itunes_xml)
     for item in path_list:

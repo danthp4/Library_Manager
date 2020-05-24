@@ -11,5 +11,5 @@ def playlist_list(playlist_name, itunes_xml):
 
 if __name__ == '__main__':
     playlist_name = "Acid"
-    itunes_xml = "C:/Users/Daniel/Music/iTunes/iTunes Music Library.xml"
+    itunes_xml = "C:/Users/danie/Music/iTunes/iTunes Music Library.xml"
     playlist_list(playlist_name, itunes_xml)
