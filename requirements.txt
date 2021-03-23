@@ -1,7 +1,8 @@
 deprecation==2.1.0
-eyeD3==0.9.5
 filetype==1.0.7
 iTunesLibrary==1.1.5
+music-tag==0.4.2
+mutagen==1.45.1
 numpy==1.19.2
 packaging==20.4
 pandas==1.1.3

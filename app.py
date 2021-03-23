@@ -1,6 +1,6 @@
 import copy
 from tkinter import *
-import eyed3, app
+import app, music_tag
 from excel_import import ExcelImport
 from itunes import playlist_list
 from player import play, stop
@@ -105,7 +105,7 @@ def main(excel_file, audio_path):
     # start playback of file on open
     play(audio_path)
 
-    # copy category list so program can later deterimin leftover categories
+    # copy category list so program can later determine leftover categories
     main.leftover_cat = copy.copy(main.cat)
 
     # initalise string update in window
@@ -187,30 +187,32 @@ class ID3Editor():
         return value[0:pos_a]
 
     def main_id3(path):
-        audiofile = eyed3.load(path)
-        for comment in audiofile.tag.comments:
-            com = comment.text
-            genres = ID3Editor.after(com, "- ")
-            comment_split_by_space = com.split(" ")
-            key = comment_split_by_space[0]
-            energy = comment_split_by_space[2]
-            comment_split_by_comma = genres.split(", ")
+        audiofile = music_tag.load_file(path)
+        comment = audiofile['comment']
+        com = str(comment)
+        print(com)
+        genres = ID3Editor.after(com, "- ")
+        print(genres)
+        comment_split_by_space = com.split(" ")
+        key = comment_split_by_space[0]
+        energy = comment_split_by_space[2]
+        comment_split_by_comma = genres.split(", ")
 
-            categories = []
-            for item in comment_split_by_comma:
-                categories.append(item)
+        categories = []
+        for item in comment_split_by_comma:
+            categories.append(item)
 
         return categories, key, energy
 
     def id3_write(path, string):
-        audiofile = eyed3.load(path)
-        audiofile.tag.comments.set(string)
-        audiofile.tag.save()
+        audiofile = music_tag.load_file(path)
+        audiofile['comment'] = string
+        audiofile.save()
 
     def get_details(path):
-        audiofile = eyed3.load(path)
-        title = audiofile.tag.title
-        artist = audiofile.tag.artist
+        audiofile = music_tag.load_file(path)
+        title = audiofile['title']
+        artist = audiofile['artist']
         return title, artist
 
 

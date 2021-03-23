@@ -1,4 +1,4 @@
-import eyed3
+import music_tag
 class ID3Editor():
 
     def after(value, a):
@@ -18,29 +18,28 @@ class ID3Editor():
         return value[0:pos_a]
 
     def main_id3(path):
-        audiofile = eyed3.load(path)
-        for comment in audiofile.tag.comments:
-            com = comment.text
-            genres = ID3Editor.after(com, "- ")
-            comment_split_by_space = com.split(" ")
-            key = comment_split_by_space[0]
-            energy = comment_split_by_space[2]
-            comment_split_by_comma = genres.split(", ")
+        audiofile = music_tag.load_file(path)
+        comment = audiofile['comment']
+        com = str(comment)
+        print(com)
+        genres = ID3Editor.after(com, "- ")
+        print(genres)
+        comment_split_by_space = com.split(" ")
+        key = comment_split_by_space[0]
+        energy = comment_split_by_space[2]
+        comment_split_by_comma = genres.split(", ")
 
 
-            categories = []
-            for item in comment_split_by_comma:
-                categories.append(item)
-            print(categories)
+        categories = []
+        for item in comment_split_by_comma:
+            categories.append(item)
+        print(categories)
 
         print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
 
-        audiofile.tag.comments.set("Techno, House, Funk, Soul")
-        print(f"# comments (after remove): {len(audiofile.tag.comments)}")
-        for comment in audiofile.tag.comments:
-            # Show comment
-            print(comment.description)
-            print(comment.text)
+        comment = "Techno, House, Funk, Soul"
+        print(f"# comments (after remove): {len(comment)}")
+        print(comment)
 
 
 if __name__ == "__main__":
