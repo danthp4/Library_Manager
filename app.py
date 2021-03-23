@@ -1,9 +1,9 @@
-import copy
+import copy, app
 from tkinter import *
-import app, music_tag
 from excel_import import ExcelImport
 from itunes import playlist_list
 from player import play, stop
+from ID3_Manager import ID3Editor
 
 
 class Checkbar(Frame):
@@ -84,7 +84,7 @@ def main(excel_file, audio_path):
     input_file = excel_file
     data = ExcelImport(input_file)
     main.input_array = data.array()
-    data.ncd.append('Additional')
+    data.ncd.append('Uncategorised')
     main.input_ncd = data.ncd
     main.dict = {}
 
@@ -93,7 +93,7 @@ def main(excel_file, audio_path):
     main.root.protocol("WM_DELETE_WINDOW", disable_event)
     main.root.title("DJ library editor")
 
-    # get details from eyed3 for audio file
+    # get details from ID3 for audio file
     id3_output = ID3Editor.main_id3(audio_path)
     main.cat = id3_output[0]
     main.key = id3_output[1]
@@ -125,6 +125,7 @@ def main(excel_file, audio_path):
                     main.leftover_cat.remove(value)
     main.input_array.append(main.leftover_cat)
 
+    """Uncomment to see remaining cat in list"""
     """print(main.leftover_cat)"""
 
     # draw checkboxes
@@ -166,55 +167,6 @@ def additional_collector():
     for item in main.leftover_cat:
         f.write("\n" + item)
         additional_collector.add_list.append(item)
-
-
-class ID3Editor():
-
-    def after(value, a):
-        # Find and validate first part.
-        pos_a = value.rfind(a)
-        if pos_a == -1: return ""
-        # Returns chars after the found string.
-        adjusted_pos_a = pos_a + len(a)
-        if adjusted_pos_a >= len(value): return ""
-        return value[adjusted_pos_a:]
-
-    def before(value, a):
-
-        # Find first part and return slice before it.
-        pos_a = value.find(a)
-        if pos_a == -1: return ""
-        return value[0:pos_a]
-
-    def main_id3(path):
-        audiofile = music_tag.load_file(path)
-        comment = audiofile['comment']
-        com = str(comment)
-        genres = ID3Editor.after(com, "- ")
-        comment_split_by_space = com.split(" ")
-        key = comment_split_by_space[0]
-        energy = comment_split_by_space[2]
-        comment_split_by_comma = genres.split(", ")
-
-        categories = []
-        for item in comment_split_by_comma:
-            categories.append(item)
-
-        return categories, key, energy
-
-    def id3_write(path, string):
-        audiofile = music_tag.load_file(path)
-        audiofile['comment'] = string
-        audiofile.save()
-
-    def get_details(path):
-        audiofile = music_tag.load_file(path)
-        title = audiofile['title']
-        artist = audiofile['artist']
-        print(artist.values)
-        if str(artist) == "":
-            artist = str(audiofile['albumartist']) + " [Album Artist]"
-        return title, artist
 
 
 if __name__ == '__main__':

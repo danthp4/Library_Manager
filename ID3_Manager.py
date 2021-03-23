@@ -21,27 +21,27 @@ class ID3Editor():
         audiofile = music_tag.load_file(path)
         comment = audiofile['comment']
         com = str(comment)
-        print(com)
         genres = ID3Editor.after(com, "- ")
-        print(genres)
         comment_split_by_space = com.split(" ")
         key = comment_split_by_space[0]
         energy = comment_split_by_space[2]
         comment_split_by_comma = genres.split(", ")
 
-
         categories = []
         for item in comment_split_by_comma:
             categories.append(item)
-        print(categories)
 
-        print(key, '-', energy, '-', ', '.join(map(str, comment_split_by_comma)))
+        return categories, key, energy
 
-        comment = "Techno, House, Funk, Soul"
-        print(f"# comments (after remove): {len(comment)}")
-        print(comment)
+    def id3_write(path, string):
+        audiofile = music_tag.load_file(path)
+        audiofile['comment'] = string
+        audiofile.save()
 
-
-if __name__ == "__main__":
-    path = "song_directory/07 Melting Point.mp3"
-    ID3Editor.main_id3(path)
+    def get_details(path):
+        audiofile = music_tag.load_file(path)
+        title = audiofile['title']
+        artist = audiofile['artist']
+        if str(artist) == "":
+            artist = str(audiofile['albumartist']) + " [Album Artist]"
+        return title, artist
