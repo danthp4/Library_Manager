@@ -125,7 +125,7 @@ def main(excel_file, audio_path):
                     main.leftover_cat.remove(value)
     main.input_array.append(main.leftover_cat)
 
-    print(main.leftover_cat)
+    """print(main.leftover_cat)"""
 
     # draw checkboxes
     fm2 = Frame(main.root)
@@ -190,9 +190,7 @@ class ID3Editor():
         audiofile = music_tag.load_file(path)
         comment = audiofile['comment']
         com = str(comment)
-        print(com)
         genres = ID3Editor.after(com, "- ")
-        print(genres)
         comment_split_by_space = com.split(" ")
         key = comment_split_by_space[0]
         energy = comment_split_by_space[2]
@@ -213,6 +211,9 @@ class ID3Editor():
         audiofile = music_tag.load_file(path)
         title = audiofile['title']
         artist = audiofile['artist']
+        print(artist.values)
+        if str(artist) == "":
+            artist = str(audiofile['albumartist']) + " [Album Artist]"
         return title, artist
 
 
