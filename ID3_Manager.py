@@ -26,7 +26,7 @@ class ID3Editor():
         key = comment_split_by_space[0]
         energy = comment_split_by_space[2]
 
-        """THIS IS MAY BE CAUSING PROBLEMS WORK ON IN FUTURE"""
+        """THIS MAY BE CAUSING PROBLEMS WORK ON IN FUTURE"""
         comment_split_by_comma = genres.split(", ")
 
         categories = []

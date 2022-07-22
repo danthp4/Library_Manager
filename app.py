@@ -96,6 +96,7 @@ def main(excel_file, audio_path):
     # get details from ID3 for audio file
     id3_output = ID3Editor.main_id3(audio_path)
     main.cat = id3_output[0]
+    print(str(main.cat))
     main.key = id3_output[1]
     main.energy = id3_output[2]
     details = ID3Editor.get_details(audio_path)
