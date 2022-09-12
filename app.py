@@ -45,12 +45,15 @@ def allstates():
                 main.checked_cat.append(main.input_array[i][j])
             j += 1
     final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
-    print('Check: ' + final_output)
-    main.update.set(final_output)
+    if len(final_output) >= 256:
+        print("CHECK FAILED: Comment too long", final_output)
+    else:
+        print('Check passed: ' + final_output)
+        main.update.set(final_output)
     return final_output
 
 
-def write():
+def write_with_error():
     # write checkbox changes to file and print
     main.checked_cat = []
     for i in range(len(main.input_ncd)):
@@ -61,22 +64,36 @@ def write():
                 main.checked_cat.append(main.input_array[i][j])
             j += 1
     final_output = str(main.key + ' - ' + main.energy + ' - ' + ', '.join(map(str, main.checked_cat)))
-    print('Wrote: ' + final_output)
-    ID3Editor.id3_write(main.audio_path, final_output)
+    if len(final_output) >= 256:
+        raise Exception("ERROR: Comment length too long")
+        # print("Did not write:", final_output)
+    else:
+        print('Wrote: ' + final_output)
+        ID3Editor.id3_write(main.audio_path, final_output)
 
+def write():
+    try:
+        write_with_error()
+    except Exception as e:
+        print(e)
 
 def close_inst(audio_path):
     # stop audio and write to file on close
     stop(audio_path)
     additional_collector()
-    write()
-    main.root.destroy()
-
+    try:
+        write_with_error()
+        main.root.destroy()
+    except Exception as e:
+        print(e)
+        return
 
 def disable_event():
     # for stopping accidental close via window x
     pass
 
+def kill():
+    exit()
 
 def main(excel_file, audio_path):
     # initialise variables
@@ -96,7 +113,7 @@ def main(excel_file, audio_path):
     # get details from ID3 for audio file
     id3_output = ID3Editor.main_id3(audio_path)
     main.cat = id3_output[0]
-    print(str(main.cat))
+    """"print(str(main.cat))"""
     main.key = id3_output[1]
     main.energy = id3_output[2]
     details = ID3Editor.get_details(audio_path)
@@ -146,6 +163,7 @@ def main(excel_file, audio_path):
     Button(fm3, text='Write', command=lambda: write()).pack(side=RIGHT)
     Button(fm3, text="Play", command=lambda: play(audio_path)).pack(side=RIGHT)
     Button(fm3, text="Stop", command=lambda: stop(audio_path)).pack(side=RIGHT)
+    Button(fm3, text="KILL", command=lambda: kill()).pack(side=RIGHT)
     fm3.pack(side=RIGHT, padx=10)
 
     # draw eyed3 info labels
@@ -153,7 +171,7 @@ def main(excel_file, audio_path):
     Label(fm4, text=audio_path, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=artist, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
     Label(fm4, text=song_title, relief=GROOVE, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
-    Label(fm4, textvariable=main.update, relief=SOLID, bd=2).pack(side=BOTTOM, anchor=W, fill=X)
+    Label(fm4, textvariable=main.update, relief=SOLID, bd=2, wraplength=750).pack(side=BOTTOM, anchor=W, fill=X)
     fm4.pack(side=LEFT, padx=10)
     # update string representation
     allstates()

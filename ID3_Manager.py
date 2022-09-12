@@ -1,4 +1,5 @@
 import music_tag
+import re
 class ID3Editor():
 
     def after(value, a):
@@ -23,17 +24,29 @@ class ID3Editor():
         com = str(comment)
         genres = ID3Editor.after(com, "- ")
         comment_split_by_space = com.split(" ")
-        key = comment_split_by_space[0]
-        energy = comment_split_by_space[2]
 
-        """THIS MAY BE CAUSING PROBLEMS WORK ON IN FUTURE"""
-        comment_split_by_comma = genres.split(", ")
+        # Analyse the comment to match one number with A or B, another number and then a hyphen
+        regex = r"^[0-9]+[AB].*\d.*[-].*$"
+        matches = re.findall(regex, com)
+        if len(matches) == 0:
+            print("Comment is in incorrect format \n Appending placeholder Key and Energy")
+            key = "13A"
+            energy = "0"
+            categories = [com]
 
-        categories = []
-        for item in comment_split_by_comma:
-            categories.append(item)
+            return categories, key, energy
 
-        return categories, key, energy
+        else:
+            key = comment_split_by_space[0]
+            energy = comment_split_by_space[2]
+            """Maybe switch to regex if i can be arsed"""
+            comment_split_by_comma = genres.split(", ")
+
+            categories = []
+            for item in comment_split_by_comma:
+                categories.append(item)
+
+            return categories, key, energy
 
     def id3_write(path, string):
         audiofile = music_tag.load_file(path)
