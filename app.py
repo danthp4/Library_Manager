@@ -190,9 +190,9 @@ def additional_collector():
 
 if __name__ == '__main__':
     playlist_name = "Sort"
-    itunes_xml = "C:/Users/danie/Music/iTunes/iTunes Music Library.xml"
+    itunes_xml = "/Users/dan/Music/Music/Library.xml"
     excel_file = 'Genre.xlsx'
     path_list = playlist_list(playlist_name, itunes_xml)
     for item in path_list:
-        audio_path = item
+        audio_path = "/" + item
         app.main(excel_file, audio_path)
