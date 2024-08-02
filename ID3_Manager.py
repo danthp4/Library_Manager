@@ -26,13 +26,18 @@ class ID3Editor():
         comment_split_by_space = com.split(" ")
 
         # Analyse the comment to match one number with A or B, another number and then a hyphen
-        regex = r"^[0-9]+[AB].*\d.*[-].*$"
+        regex = r"^[1-9]+[A-B]+ +-+ [0-9]|[2-9]|1[0-2]+[A-B]+ +-+ [0-9]"
         matches = re.findall(regex, com)
         if len(matches) == 0:
-            print("Comment is in incorrect format \n Appending placeholder Key and Energy")
-            key = "13A"
+            print("Comment is in incorrect format\nAppending placeholder Key and Energy")
+            key = "99A"
             energy = "0"
-            categories = [com]
+            """Maybe switch to regex if i can be arsed"""
+            comment_split_by_comma = genres.split(", ")
+
+            categories = []
+            for item in comment_split_by_comma:
+                categories.append(item)
 
             return categories, key, energy
 
@@ -41,11 +46,16 @@ class ID3Editor():
             energy = comment_split_by_space[2]
             """Maybe switch to regex if i can be arsed"""
             comment_split_by_comma = genres.split(", ")
-
             categories = []
+            print(comment_split_by_comma)
             for item in comment_split_by_comma:
-                categories.append(item)
-
+                if item == energy:
+                    pass
+                    """silly bugfix that stops dupes of energy on some tracks into comments"""
+                elif item+"," == energy:
+                    pass
+                else:
+                    categories.append(item)
             return categories, key, energy
 
     def id3_write(path, string):
