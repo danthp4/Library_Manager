@@ -47,7 +47,6 @@ class ID3Editor():
             """Maybe switch to regex if i can be arsed"""
             comment_split_by_comma = genres.split(", ")
             categories = []
-            print(comment_split_by_comma)
             for item in comment_split_by_comma:
                 if item == energy:
                     pass
